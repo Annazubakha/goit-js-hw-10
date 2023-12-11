@@ -44,7 +44,7 @@ function onBreedSelect(e) {
     <div class="info-container">
     <h2 class="name">${dataMarkUp.name}</h2>
     <p class="description">${dataMarkUp.description}</p>
-  <p class="temperament"<span>Temperament:</span> ${dataMarkUp.temperament}</p>
+  <p class="temperament"> <span>Temperament:</span> ${dataMarkUp.temperament}</p>
   </div>  </div>`;
     })
     .catch(error => {

@@ -2,6 +2,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SlimSelect from 'slim-select';
 import 'slim-select/dist/slimselect.css';
 import { fetchBreeds, fetchCatByBreed } from './js/cat-api';
+import { listTemplate, createOptions } from './js/template';
 
 const refs = {
   selectedElem: document.querySelector('.breed-select'),
@@ -12,10 +13,8 @@ const refs = {
 
 fetchBreeds()
   .then(({ data }) => {
-    const options = data
-      .map(({ id, name }) => `<option value=${id}>${name} </option>`)
-      .join('');
-    refs.selectedElem.innerHTML = options;
+    const markup = createOptions(data);
+    refs.selectedElem.innerHTML = markup;
 
     new SlimSelect({
       select: refs.selectedElem,
@@ -38,14 +37,8 @@ refs.selectedElem.addEventListener('change', onBreedSelect);
 function onBreedSelect(e) {
   const breedId = e.target.value;
   fetchCatByBreed(breedId)
-    .then(response => {
-      const dataMarkUp = response.data[0].breeds[0];
-      refs.catInfo.innerHTML = `<div class="container"><img class="photo" src="${response.data[0].url}" alt="${dataMarkUp.name}"/>
-    <div class="info-container">
-    <h2 class="name">${dataMarkUp.name}</h2>
-    <p class="description">${dataMarkUp.description}</p>
-  <p class="temperament"> <span>Temperament:</span> ${dataMarkUp.temperament}</p>
-  </div>  </div>`;
+    .then(data => {
+      refs.catInfo.innerHTML = listTemplate(data);
     })
     .catch(error => {
       Notify.failure('Oops! Something went wrong! Try reloading the page!', {
